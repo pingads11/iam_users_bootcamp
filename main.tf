@@ -17,17 +17,15 @@ resource "aws_iam_group" "students" {
 
 ##### ADDING A DEFAULT POLICY TO THE GROUPS #####
 
-resource "aws_iam_policy_attachment" "trainer_group_attach" {
-  name = "trainer_group_attach"
+resource "aws_iam_group_policy_attachment" "trainer_group_attach" {
   for_each = toset(var.trainer_policies)
-  groups = [aws_iam_group.trainers.name]
+  group = aws_iam_group.trainers.name
   policy_arn = each.value
 }
 
-resource "aws_iam_policy_attachment" "student_group_attach" {
-  name = "student_group_attach"
+resource "aws_iam_group_policy_attachment" "student_group_attach" {
   for_each = toset(var.student_policies)
-  groups = [aws_iam_group.students.name]
+  group = aws_iam_group.students.name
   policy_arn = each.value
 }
 
@@ -48,19 +46,15 @@ resource "aws_iam_user" "student" {
 
 ##### ADDING USERS TO THEIR GROUPS #####
 
-resource "aws_iam_group_membership" "trainers_membership" {
-  name = "Trainer Memberships"
+resource "aws_iam_user_group_membership" "trainers_membership" {
   for_each = toset(var.trainer_users)
-  users = [aws_iam_user.trainer[each.value].name]
-  group = aws_iam_group.trainers.name
-  depends_on = [aws_iam_user.trainer, aws_iam_group.trainers]
+  user = aws_iam_user.trainer[each.value].name
+  groups = [aws_iam_group.trainers.name]
 }
 
-resource "aws_iam_group_membership" "students_membership" {
-  name = "Student Memberships"
+resource "aws_iam_user_group_membership" "students_membership" {
   for_each = toset(var.student_users)
-  users = [aws_iam_user.student[each.value].name]
-  group = aws_iam_group.students.name
-  depends_on = [aws_iam_user.student, aws_iam_group.students]
+  user = aws_iam_user.student[each.value].name
+  groups = [aws_iam_group.students.name]
 }
 
