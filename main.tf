@@ -1,11 +1,36 @@
+################################
+#####   REMOTE S3 BACKEND  #####
+################################
+
+### Only uncomment this block when you have deployed all the
+### resources successfully and have the terraform.tfstate locally.
+
+terraform {
+  backend "s3" {
+
+### Variables are not allowed in this block. Make sure to update
+### the bucket and dynamodb table names below if changed.
+
+    bucket = "bootcamp-2021-aws-s3-bucket"
+    dynamodb_table = "terraform-state-locking"
+
+    key = "terraform/terraform.tfstate"
+    region = "eu-central-1"
+    encrypt = true
+  }
+}
+
+################################
 ##### DEFINING THE REGION  #####
-##### NOT RELEVANT FOR IAM #####
+################################
 
 provider "aws" {
   region = "eu-central-1"
 }
 
+###############################
 ##### CREATING THE GROUPS #####
+###############################
 
 resource "aws_iam_group" "trainers" {
   name = "Trainers"
@@ -15,7 +40,9 @@ resource "aws_iam_group" "students" {
   name = "Students"
 }
 
+############################################
 ##### CREATING A STUDENT POLICY FOR S3 #####
+############################################
 
 resource "aws_iam_policy" "student_s3_policy" {
   name = "Student_S3_Policy"
@@ -44,7 +71,9 @@ resource "aws_iam_policy" "student_s3_policy" {
 EOF
 }
 
+#################################################
 ##### ADDING DEFAULT POLICIES TO THE GROUPS #####
+#################################################
 
 resource "aws_iam_group_policy_attachment" "trainer_group_attach" {
   for_each = toset(var.trainer_policies)
@@ -62,22 +91,23 @@ resource "aws_iam_group_policy_attachment" "student_group_s3_attach" {
   group = aws_iam_group.students.name
   policy_arn = aws_iam_policy.student_s3_policy.arn
 }
-
-##### CREATING THE TRAINER USERS #####
+##################################################
+##### CREATING THE TRAINER AND STUDENT USERS #####
+##################################################
 
 resource "aws_iam_user" "trainer" {
   for_each = toset(var.trainer_users)
   name     = each.value
 }
 
-##### CREATING THE STUDENT USERS #####
-
 resource "aws_iam_user" "student" {
   for_each = toset(var.student_users)
   name     = each.value
 }
 
+########################################
 ##### ADDING USERS TO THEIR GROUPS #####
+########################################
 
 resource "aws_iam_user_group_membership" "trainers_membership" {
   for_each = toset(var.trainer_users)
@@ -91,33 +121,49 @@ resource "aws_iam_user_group_membership" "students_membership" {
   groups = [aws_iam_group.students.name]
 }
 
-##### S3 BUCKET #####
+##################################
+##### CREATING THE S3 BUCKET #####
+##################################
 
 resource "aws_s3_bucket" "bootcamp_bucket" {
   bucket = "bootcamp-2021-aws-s3-bucket"
 
   acl    = "private"
 
-# Policies can be added in s3policies.json. Uncomment the line below 
-# to apply them.
+### The bracket below prevents the bucket to be accidentally destroyed 
+### by "terraform destroy". This will avoid losing the terraform.tfstate file
+### stored as backend in the S3 bucket. If needed, destroy manually.
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+### Policies can be added in the s3_bucket_policy.json file.
+### Uncomment the line below to apply them.
 
 # policy = file("s3_bucket_policy.json")
-
-# Allow deletion of non-empty bucket. Comment it out if not needed.
-  force_destroy = true
 
   versioning {
     enabled = true
   }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
-##### S3 BUCKET INTO BACKEND #####
-
-#terraform {
-#  backend "s3" {
-#    bucket = aws_s3_bucket.bootcamp_bucket.bucket
-#    key    = "/key/"
-#    region = "eu-central-1"
-#  }
-#}
+resource "aws_dynamodb_table" "terraform_locks" {
+  name = "terraform-state-locking"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "LockID"
+  
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
 

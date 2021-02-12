@@ -1,4 +1,4 @@
-# HOW-TO
+# PURPOSE
 
 This creates:
 
@@ -12,5 +12,17 @@ This creates:
 
 * Attachments of the policies to their respective groups.
 
-* A private S3 Bucket available to the account only.
+* A private S3 Bucket used as remote backend for Terraform with a DynamoDB state lock.
+
+# HOW-TO DEPLOY
+
+1) Run **terraform init** and **terraform apply** the first time.
+
+2) Verify the successful deployment: Groups, Users, Permissions, and S3 Bucket.
+
+3) Go to the **main.tf** file and uncomment the first block named **REMOTE S3 BACKEND**.
+
+4) Run **terraform init AND terraform apply** a second time to change the **terraform.tfstate** file storage from local to remote.
+
+5) Verify that the S3 Bucket contains the state file.
 
