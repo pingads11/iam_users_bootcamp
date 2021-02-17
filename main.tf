@@ -54,6 +54,7 @@ resource "aws_iam_policy" "student_s3_policy" {
         {
             "Effect": "Allow",
             "Action": [
+                "s3:ListAllMyBuckets",
                 "s3:CreateBucket",
                 "s3:ListBucket",
                 "s3:GetBucketLocation",
@@ -64,7 +65,9 @@ resource "aws_iam_policy" "student_s3_policy" {
                 "s3:PutBucketPolicy",
                 "s3:GetBucketAcl"
             ],
-            "Resource": "${aws_s3_bucket.bootcamp_bucket.arn}"
+            "Resource": [
+                "arn:aws:s3:::*"
+            ]
         }
     ]
 }
@@ -126,6 +129,10 @@ resource "aws_iam_user_group_membership" "students_membership" {
 ##################################
 
 resource "aws_s3_bucket" "bootcamp_bucket" {
+
+### If you change the name below, updated it also in the first block
+### named terraform backend "s3"
+
   bucket = "bootcamp-2021-aws-s3-bucket"
 
   acl    = "private"
@@ -156,8 +163,17 @@ resource "aws_s3_bucket" "bootcamp_bucket" {
   }
 }
 
+#######################################
+##### CREATING THE DYNAMODB TABLE #####
+#######################################
+
 resource "aws_dynamodb_table" "terraform_locks" {
+
+### If you change the name below, updated it also in the first block
+### named terraform backend "s3"
+
   name = "terraform-state-locking"
+
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "LockID"
   
@@ -165,5 +181,27 @@ resource "aws_dynamodb_table" "terraform_locks" {
     name = "LockID"
     type = "S"
   }
+}
+
+###################################
+##### IAM USER LOGIN PROFILES #####
+###################################
+
+resource "aws_iam_user_login_profile" "trainer_logins" {
+  for_each = toset(var.trainer_users)
+  user    = aws_iam_user.trainer[each.value].name
+
+### Change the username below to match your Keybase profile
+
+  pgp_key = "keybase:idrisscharai"
+}
+
+resource "aws_iam_user_login_profile" "student_logins" {
+  for_each = toset(var.student_users)
+  user    = aws_iam_user.student[each.value].name
+
+### Change the username below to match your Keybase profile
+
+  pgp_key = "keybase:idrisscharai"
 }
 
