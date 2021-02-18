@@ -30,19 +30,21 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 3) Clone this repository locally.
 
-4) In **main.tf**, go to the last **four** resources below the **IAM User Access Keys** block and update the **pgp_key** arguments - it should be "keybase:yourusername" in **all of them**.
+4) Open **main.tf** and check the very first block named **REMOTE S3 BACKEND**; it should all be commented out. _This is to make sure that you first deploy everything  correctly with a local state file._
 
-5) Run **terraform init** and **terraform apply** the first time.
+5) Still in **main.tf**, go to the last **four** resources below the **IAM User Access Keys** block and update the **pgp_key** arguments - it should be "keybase:yourusername" in **all of them**.
 
-6) Verify the successful deployment: Groups, Users, Permissions, and S3 Bucket.
+6) Run **terraform init** and **terraform apply** the first time.
 
-7) Go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**.
+7) Verify the successful deployment: Groups, Users, Permissions, and S3 Bucket.
 
-8) Run **terraform init AND terraform apply** a second time to change the **terraform.tfstate** file storage from local to remote.
+8) Now, go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**.
 
-9) Verify that the S3 Bucket contains the state file.
+9) Run **terraform init** _(and terraform plan/apply if you want to check for changes)_ a second time to change the **terraform.tfstate** file storage from local to remote.
 
-10) To enable users access to the AWS Console:
+10) Verify that the S3 Bucket contains the state file.
+
+11) To enable users access to the AWS Console:
 
 * Running Terraform Apply outputs Student Access Key IDs, Student Access Key Secrets, Encrypted Student Passwords, Student Users, Trainer Access Key IDs, Trainer Access Key Secrets, Encrypted Trainer Passwords, Trainer Users in this other. 
 
@@ -52,5 +54,5 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 * Access Key Secrets are visible on the remote backend state file, unencrypted. Encryption can be added by uncommenting the **pgp_key** argument in the **two** **aws_iam_access_key** resources. This adds more manual work.
 
-_(A less manual option can be investigated using the Keybase desktop app or pkg. Note that it cannot be used with root privilege)_
+_(A less manual option can be investigated using the Keybase desktop app or pkg. Note that it cannot be used with root privilege.)_
 

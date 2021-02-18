@@ -5,20 +5,20 @@
 ### Only uncomment this block when you have deployed all the
 ### resources successfully and have the terraform.tfstate locally.
 
-terraform {
-  backend "s3" {
+#terraform {
+#  backend "s3" {
 
 ### Variables are not allowed in this block. Make sure to update
 ### the bucket and dynamodb table names below if changed.
 
-    bucket = "bootcamp-2021-aws-s3-bucket"
-    dynamodb_table = "terraform-state-locking"
+#    bucket = "bootcamp-2021-aws-s3-bucket"
+#    dynamodb_table = "terraform-state-locking"
 
-    key = "terraform/terraform.tfstate"
-    region = "eu-central-1"
-    encrypt = true
-  }
-}
+#    key = "terraform/terraform.tfstate"
+#    region = "eu-central-1"
+#    encrypt = true
+#  }
+#}
 
 ################################
 ##### DEFINING THE REGION  #####
