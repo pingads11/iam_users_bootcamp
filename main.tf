@@ -183,6 +183,30 @@ resource "aws_dynamodb_table" "terraform_locks" {
   }
 }
 
+################################
+##### IAM USER ACCESS KEYS #####
+################################
+
+resource "aws_iam_access_key" "trainer_keys" {
+  for_each = toset(var.trainer_users)
+  user    = aws_iam_user.trainer[each.value].name
+
+### If you want to encrypt the secret access key, uncomment the line below and 
+### change the username to match your Keybase profile
+
+#  pgp_key = "keybase:idrisscharai"
+}
+
+resource "aws_iam_access_key" "student_keys" {
+  for_each = toset(var.student_users)
+  user    = aws_iam_user.student[each.value].name
+
+### If you want to encrypt the secret access key, uncomment the line below and
+### change the username to match your Keybase profile
+
+#  pgp_key = "keybase:idrisscharai"
+}
+
 ###################################
 ##### IAM USER LOGIN PROFILES #####
 ###################################

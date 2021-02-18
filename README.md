@@ -16,6 +16,12 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 * A private S3 Bucket used as remote backend for Terraform with a DynamoDB state lock.
 
+
+# REQUIREMENTS
+
+* The student users need to be able to reset their passwords after the first login. To do that, they need permission from the AWS Account that deploys them. Go to IAM -> Account Settings on the left panel -> Change password policy -> **Allow users to reset their passwords** (Make sure you check any other field that was applied in the previous configuration)
+
+
 # HOW-TO DEPLOY
 
 1) Configure **aws-cli** with your access keys.
@@ -24,13 +30,13 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 3) Clone this repository locally.
 
-4) Go to the last **2** resources under the **IAM User Login Profiles** block and update the attribute **pgp_key** - it should be "keybase:yourusername" in **both of them**
+4) In **main.tf**, go to the last **four** resources below the **IAM User Access Keys** block and update the **pgp_key** arguments - it should be "keybase:yourusername" in **all of them**.
 
 5) Run **terraform init** and **terraform apply** the first time.
 
 6) Verify the successful deployment: Groups, Users, Permissions, and S3 Bucket.
 
-7) Go to the **main.tf** file and uncomment the first block named **REMOTE S3 BACKEND**.
+7) Go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**.
 
 8) Run **terraform init AND terraform apply** a second time to change the **terraform.tfstate** file storage from local to remote.
 
@@ -38,12 +44,13 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 10) To enable users access to the AWS Console:
 
-* Running Terraform Apply outputs Encrypted Student Passwords, Student Users, Encrypted Trainer Passwords, Trainer Users in this other. For now, the manual part of this automation is to decrypt each password and communicate it to its user. This can be done on _https://keybase.io/decrypt_, but you need to paste the encrypted password in the **keybase_pgp_template** file provided
+* Running Terraform Apply outputs Student Access Key IDs, Student Access Key Secrets, Encrypted Student Passwords, Student Users, Trainer Access Key IDs, Trainer Access Key Secrets, Encrypted Trainer Passwords, Trainer Users in this other. 
+
+* For now, the manual part of this automation is to decrypt each password and communicate it to its user. The decryption can be done on _https://keybase.io/decrypt_ with the same profile whose usernamed was applied to the **pgp_key** arguments, but you need to paste the encrypted password in the **keybase_pgp_template** file provided for the correct format.
 
 * Encrypted passwords can be seen on the state file as expected, but the only person able to decrypt them is the one with the Keybase account.
 
+* Access Key Secrets are visible on the remote backend state file, unencrypted. Encryption can be added by uncommenting the **pgp_key** argument in the **two** **aws_iam_access_key** resources. This adds more manual work.
+
 _(A less manual option can be investigated using the Keybase desktop app or pkg. Note that it cannot be used with root privilege)_
 
-# REQUIREMENTS
-
-* The student users need to be able to reset their passwords after the first login. To do that, they need permission from the AWS Account that deploys them. Go to IAM -> Account Settings on the left panel -> Change password policy -> **Allow users to reset their passwords** (Make sure you check any other field was applied in the previous configuration)
