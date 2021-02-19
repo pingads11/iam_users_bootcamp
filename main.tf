@@ -137,13 +137,20 @@ resource "aws_s3_bucket" "bootcamp_bucket" {
 
   acl    = "private"
 
-### The bracket below prevents the bucket to be accidentally destroyed 
+### The argument below prevents the bucket to be accidentally destroyed
 ### by "terraform destroy". This will avoid losing the terraform.tfstate file
-### stored as backend in the S3 bucket. If needed, destroy manually.
+### stored as backend in the S3 bucket. Comment it out if you want to
+### destroy the bucket.
 
   lifecycle {
     prevent_destroy = true
   }
+
+### The argument below should be commented out by default. If you want to
+### destroy the bucket, uncomment it. It will delete all the files
+### inside it in an unrecoverable manner!
+
+#  force_destroy = true
 
 ### Policies can be added in the s3_bucket_policy.json file.
 ### Uncomment the line below to apply them.

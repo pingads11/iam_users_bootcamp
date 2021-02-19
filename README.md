@@ -56,3 +56,19 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 _(A less manual option can be investigated using the Keybase desktop app or pkg. Note that it cannot be used with root privilege.)_
 
+# TERRAFORM DESTROY
+
+**NEVER DELETE THE BUCKET MANUALLY FIRST**
+
+1) In **main.tf**, comment out the first remote S3 backend block and run **terraform init** to save the state file locally.
+
+2) Go to the S3 bucket block and comment out the **lifecycle** block
+
+3) Then uncomment **force_destroy = true**
+
+4) Finally, run **terraform destroy**.
+
+5) Due to the versioning of the bucket, it might destroy everything except the bucket and its contents. In that case, manually use the **empty** action on the bucket then **delete** it.
+
+6) Run **terraform apply** after to account for that.
+
