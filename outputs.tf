@@ -39,9 +39,9 @@ output "student_key_id" {
 ##############################
 
 output "trainer_key_secret" {
-  value = values(aws_iam_access_key.trainer_keys)[*].secret
+  value = values(aws_iam_access_key.trainer_keys)[*].encrypted_secret
 }
 
 output "student_key_secret" {
-  value = values(aws_iam_access_key.student_keys)[*].secret
+  value = values(aws_iam_access_key.student_keys)[*].encrypted_secret
 }

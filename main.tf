@@ -44,34 +44,55 @@ resource "aws_iam_group" "students" {
 ##### CREATING A STUDENT POLICY FOR S3 #####
 ############################################
 
+data "template_file" "student_s3_policy" {
+  template = file("./custom_s3_student_policy.tpl")
+  vars = {
+    bucket_name = var.bucket_name
+  }
+}
+
 resource "aws_iam_policy" "student_s3_policy" {
   name = "Student_S3_Policy"
   description = "A policy allowing Create, Get, and Put actions on S3 buckets without the Delete action."
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListAllMyBuckets",
-                "s3:CreateBucket",
-                "s3:ListBucket",
-                "s3:GetBucketLocation",
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:GetObjectVersion",
-                "s3:GetBucketPolicy",
-                "s3:PutBucketPolicy",
-                "s3:GetBucketAcl"
-            ],
-            "Resource": [
-                "arn:aws:s3:::*"
-            ]
-        }
-    ]
-}
-EOF
+
+  policy = data.template_file.student_s3_policy.rendered
+
+#  policy = <<EOF
+#{
+#    "Version": "2012-10-17",
+#    "Statement": [
+#        {
+#            "Effect": "Allow",
+#            "Action": [
+#                "s3:ListAllMyBuckets",
+#		"s3:ListBucket",
+#                "s3:CreateBucket",
+#		"s3:GetAccountPublicAccessBlock",
+#		"s3:GetBucketPublicAccessBlock",
+#                "s3:GetBucketLocation",
+#                "s3:GetBucketPolicyStatus",
+#                "s3:GetBucketAcl",
+#		"s3:ListAccessPoints"
+#            ],
+#            "Resource": [
+#                "arn:aws:s3:::*"
+#            ]
+#        },
+#	{
+#            "Effect": "Allow",
+#            "Action": [
+#                "s3:GetObject",
+#                "s3:PutObject",
+#                "s3:GetObjectVersion"
+#            ],
+#            "Resource": [
+#                "arn:aws:s3:::bootcamp-2021-aws-s3-bucket"
+#            ]
+#        }
+#
+#    ]
+#}
+#EOF
 }
 
 #################################################
@@ -133,7 +154,7 @@ resource "aws_s3_bucket" "bootcamp_bucket" {
 ### If you change the name below, updated it also in the first block
 ### named terraform backend "s3"
 
-  bucket = "bootcamp-2021-aws-s3-bucket"
+  bucket = var.bucket_name
 
   acl    = "private"
 
@@ -142,9 +163,9 @@ resource "aws_s3_bucket" "bootcamp_bucket" {
 ### stored as backend in the S3 bucket. Comment it out if you want to
 ### destroy the bucket.
 
-  lifecycle {
-    prevent_destroy = true
-  }
+#  lifecycle {
+#    prevent_destroy = true
+#  }
 
 ### The argument below should be commented out by default. If you want to
 ### destroy the bucket, uncomment it. It will delete all the files
@@ -152,7 +173,8 @@ resource "aws_s3_bucket" "bootcamp_bucket" {
 
 #  force_destroy = true
 
-### Policies can be added in the s3_bucket_policy.json file.
+### Policies can be added in the s3_bucket_policy.json file
+### in case you want to allow other AWS accounts to have access to it
 ### Uncomment the line below to apply them.
 
 # policy = file("s3_bucket_policy.json")
@@ -179,7 +201,7 @@ resource "aws_dynamodb_table" "terraform_locks" {
 ### If you change the name below, updated it also in the first block
 ### named terraform backend "s3"
 
-  name = "terraform-state-locking"
+  name = var.dynamodb_name
 
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "LockID"
@@ -198,20 +220,14 @@ resource "aws_iam_access_key" "trainer_keys" {
   for_each = toset(var.trainer_users)
   user    = aws_iam_user.trainer[each.value].name
 
-### If you want to encrypt the secret access key, uncomment the line below and 
-### change the username to match your Keybase profile
-
-#  pgp_key = "keybase:idrisscharai"
+  pgp_key = var.keybase_username
 }
 
 resource "aws_iam_access_key" "student_keys" {
   for_each = toset(var.student_users)
   user    = aws_iam_user.student[each.value].name
 
-### If you want to encrypt the secret access key, uncomment the line below and
-### change the username to match your Keybase profile
-
-#  pgp_key = "keybase:idrisscharai"
+  pgp_key = var.keybase_username
 }
 
 ###################################
@@ -222,17 +238,13 @@ resource "aws_iam_user_login_profile" "trainer_logins" {
   for_each = toset(var.trainer_users)
   user    = aws_iam_user.trainer[each.value].name
 
-### Change the username below to match your Keybase profile
-
-  pgp_key = "keybase:idrisscharai"
+  pgp_key = var.keybase_username
 }
 
 resource "aws_iam_user_login_profile" "student_logins" {
   for_each = toset(var.student_users)
   user    = aws_iam_user.student[each.value].name
 
-### Change the username below to match your Keybase profile
-
-  pgp_key = "keybase:idrisscharai"
+  pgp_key = var.keybase_username
 }
 
