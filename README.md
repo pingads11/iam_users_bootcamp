@@ -24,51 +24,49 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 # HOW-TO DEPLOY
 
-1) Configure **aws-cli** with your access keys.
+1. Configure **aws-cli** with your access keys.
 
-2) Create a Keybase account with a PGP key - no need to install it locally.
+2. Create a Keybase account with a PGP key - no need to install it locally.
 
-3) Clone this repository locally.
+3. Clone this repository locally.
 
-4) Open **main.tf** and check the very first block named **REMOTE S3 BACKEND**; it should all be commented out. _This is to make sure that you first deploy everything  correctly with a local state file._
+4. Open **main.tf** and check the very first block named **REMOTE S3 BACKEND**; it should all be commented out. _This is to make sure that you first deploy everything  correctly with a local state file._
 
-5) Still in **main.tf**, go to the last **four** resources below the **IAM User Access Keys** block and update the **pgp_key** arguments - it should be "keybase:yourusername" in **all of them**.
+5. Still in **main.tf**, go to the last **four** resources below the **IAM User Access Keys** block and update the **pgp_key** arguments - it should be "keybase:yourusername" in **all of them**.
 
-6) Run **terraform init** and **terraform apply** the first time.
+6. Run **terraform init** and **terraform apply** the first time.
 
-7) Verify the successful deployment: Groups, Users, Permissions, and S3 Bucket.
+7. Verify the successful deployment: Groups, Users, Permissions, and S3 Bucket.
 
-8) Now, go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**.
+8. Now, go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**.
 
-9) Run **terraform init** _(and terraform plan/apply if you want to check for changes)_ a second time to change the **terraform.tfstate** file storage from local to remote.
+9. Run **terraform init** _(and terraform plan/apply if you want to check for changes)_ a second time to change the **terraform.tfstate** file storage from local to remote.
 
-10) Verify that the S3 Bucket contains the state file.
+10. Verify that the S3 Bucket contains the state file.
 
-11) To enable users access to the AWS Console:
+11. To enable users access to the AWS Console:
 
-* Running Terraform Apply outputs Student Access Key IDs, Student Access Key Secrets, Encrypted Student Passwords, Student Users, Trainer Access Key IDs, Trainer Access Key Secrets, Encrypted Trainer Passwords, Trainer Users in this other. 
+* Running Terraform Apply outputs Student Access Key IDs, Encrypted Student Access Key Secrets, Encrypted Student Passwords, Student Users, Trainer Access Key IDs, Encrypted Trainer Access Key Secrets, Encrypted Trainer Passwords, and Trainer Users in this other. 
 
-* For now, the manual part of this automation is to decrypt each password and communicate it to its user. The decryption can be done on _https://keybase.io/decrypt_ with the same profile whose usernamed was applied to the **pgp_key** arguments, but you need to paste the encrypted password in the **keybase_pgp_template** file provided for the correct format.
+* For now, the manual part of this automation is to decrypt each password and communicate it to its user. The decryption can be done on _https://keybase.io/decrypt_ with the same profile whose usernamed was applied to the **pgp_key** arguments, but you need to paste the encrypted password/secret in the **keybase_pgp_template** file provided for the correct format.
 
-* Encrypted passwords can be seen on the state file as expected, but the only person able to decrypt them is the one with the Keybase account.
-
-* Access Key Secrets are visible on the remote backend state file, unencrypted. Encryption can be added by uncommenting the **pgp_key** argument in the **two** **aws_iam_access_key** resources. This adds more manual work.
+* Encrypted passwords and secret keys can be seen on the state file as expected, but the only person able to decrypt them is the one with the Keybase account.
 
 _(A less manual option can be investigated using the Keybase desktop app or pkg. Note that it cannot be used with root privilege.)_
 
 # TERRAFORM DESTROY
 
-**NEVER DELETE THE BUCKET MANUALLY FIRST**
+**NEVER DELETE THE BUCKET MANUALLY FIRST!**
 
-1) In **main.tf**, comment out the first remote S3 backend block and run **terraform init** to save the state file locally.
+1. In **main.tf**, comment out the first remote S3 backend block and run **terraform init** to save the state file locally.
 
-2) Go to the S3 bucket block and comment out the **lifecycle** block
+2. Go to the S3 bucket block and comment out the **lifecycle** block
 
-3) Then uncomment **force_destroy = true**
+3. Then uncomment **force_destroy = true**
 
-4) Finally, run **terraform destroy**.
+4. Finally, run **terraform destroy**.
 
-5) Due to the versioning of the bucket, it might destroy everything except the bucket and its contents. In that case, manually use the **empty** action on the bucket then **delete** it.
+5. Due to the versioning of the bucket, it might destroy everything except the bucket and its contents. In that case, manually use the **empty** action on the bucket then **delete** it.
 
-6) Run **terraform apply** after to account for that.
+6. Run **terraform apply** after to account for that.
 
