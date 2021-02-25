@@ -5,20 +5,20 @@
 ### Only uncomment this block when you have deployed all the
 ### resources successfully and have the terraform.tfstate locally.
 
-#terraform {
-#  backend "s3" {
+terraform {
+  backend "s3" {
 
 ### Variables are not allowed in this block. Make sure to update
 ### the bucket and dynamodb table names below if changed.
 
-#    bucket = "bootcamp-2021-aws-s3-bucket"
-#    dynamodb_table = "terraform-state-locking"
+    bucket = "restricted-tfstate-bootcamp-bucket"
+    dynamodb_table = "terraform-state-locking"
 
-#    key = "terraform/terraform.tfstate"
-#    region = "eu-central-1"
-#    encrypt = true
-#  }
-#}
+    key = "terraform/terraform.tfstate"
+    region = "eu-central-1"
+    encrypt = true
+  }
+}
 
 ################################
 ##### DEFINING THE REGION  #####
@@ -26,6 +26,38 @@
 
 provider "aws" {
   region = "eu-central-1"
+}
+
+########################################
+##### CALLING STATE BUCKET MODULE  #####
+########################################
+
+module "state_bucket" {
+  source = "./modules/s3bucket"
+
+### A default name is already defined, if you want to use a different one,
+### add it below and uncomment the line.
+
+#  bucket = ""
+}
+
+####################################
+##### ACCOUNT PASSWORD POLICY  #####
+####################################
+
+### This is to enable the option for users to change their passwords
+### after the first login. The other password requirements need to be 
+### set as well (as desired).
+
+### WARNING: This modifies the password policy on the root account!
+
+resource "aws_iam_account_password_policy" "strict" {
+  minimum_password_length        = 8
+  require_lowercase_characters   = true
+  require_numbers                = true
+  require_uppercase_characters   = true
+  require_symbols                = true
+  allow_users_to_change_password = true
 }
 
 ###############################
@@ -47,7 +79,8 @@ resource "aws_iam_group" "students" {
 data "template_file" "student_s3_policy" {
   template = file("./custom_s3_student_policy.tpl")
   vars = {
-    bucket_name = var.bucket_name
+    bootcamp_bucket_name = var.bucket_name
+    state_bucket_name = module.state_bucket.bucket_name
   }
 }
 
@@ -56,43 +89,6 @@ resource "aws_iam_policy" "student_s3_policy" {
   description = "A policy allowing Create, Get, and Put actions on S3 buckets without the Delete action."
 
   policy = data.template_file.student_s3_policy.rendered
-
-#  policy = <<EOF
-#{
-#    "Version": "2012-10-17",
-#    "Statement": [
-#        {
-#            "Effect": "Allow",
-#            "Action": [
-#                "s3:ListAllMyBuckets",
-#		"s3:ListBucket",
-#                "s3:CreateBucket",
-#		"s3:GetAccountPublicAccessBlock",
-#		"s3:GetBucketPublicAccessBlock",
-#                "s3:GetBucketLocation",
-#                "s3:GetBucketPolicyStatus",
-#                "s3:GetBucketAcl",
-#		"s3:ListAccessPoints"
-#            ],
-#            "Resource": [
-#                "arn:aws:s3:::*"
-#            ]
-#        },
-#	{
-#            "Effect": "Allow",
-#            "Action": [
-#                "s3:GetObject",
-#                "s3:PutObject",
-#                "s3:GetObjectVersion"
-#            ],
-#            "Resource": [
-#                "arn:aws:s3:::bootcamp-2021-aws-s3-bucket"
-#            ]
-#        }
-#
-#    ]
-#}
-#EOF
 }
 
 #################################################
@@ -115,6 +111,7 @@ resource "aws_iam_group_policy_attachment" "student_group_s3_attach" {
   group = aws_iam_group.students.name
   policy_arn = aws_iam_policy.student_s3_policy.arn
 }
+
 ##################################################
 ##### CREATING THE TRAINER AND STUDENT USERS #####
 ##################################################

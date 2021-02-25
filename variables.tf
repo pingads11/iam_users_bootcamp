@@ -2,9 +2,6 @@
 ##### BUCKET NAME #####
 #######################
 
-### If the name below is changed, make sure to change it also
-### in the remote s3 backend block in main.tf
-
 variable "bucket_name" {
   type = string
   default = "bootcamp-march2021-aws-s3-bucket"

@@ -26,7 +26,16 @@
           "s3:GetObjectVersion"
         ],
         "Resource": [
-          "arn:aws:s3:::${bucket_name}"
+          "arn:aws:s3:::${bootcamp_bucket_name}"
+        ]
+      },
+      {
+        "Effect": "Deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::${state_bucket_name}"
         ]
       }
     ]
