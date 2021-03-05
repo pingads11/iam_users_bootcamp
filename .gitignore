@@ -6,4 +6,4 @@ terraform.tfstate
 
 terraform.tfstate.backup
 
-./credentials/all_credentials.txt
+all_credentials.txt

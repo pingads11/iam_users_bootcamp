@@ -12,7 +12,8 @@
 ### to communicate info to each user.
 
 echo Please wait while the credentials file is being prepared...
-echo You will prompted to enter your keybase password the first time.
+echo If this is your first time running the script,
+echo you will soon be prompted to enter your keybase password.
 
 ###############################
 ##### ENCRYPTED PASSWORDS #####
@@ -79,7 +80,7 @@ do
 	echo $line >> password.txt
 	tail -n 1 keybase_pgp_template >> password.txt
 	keybase pgp decrypt -i password.txt >> ./credentials/decrypted/trainer_passwords
-	echo -e \n >> ./credentials/decrypted/trainer_passwords
+	echo >> ./credentials/decrypted/trainer_passwords
 done < "./credentials/clean/trainer_encrypted_passwords_adjusted"
 
 ##################
@@ -93,7 +94,7 @@ do
         echo $line >> password.txt
         tail -n 1 keybase_pgp_template >> password.txt
         keybase pgp decrypt -i password.txt >> ./credentials/decrypted/student_passwords
-        echo -e \n >> ./credentials/decrypted/student_passwords
+        echo >> ./credentials/decrypted/student_passwords
 done < "./credentials/clean/student_encrypted_passwords_adjusted"
 
 ##################
@@ -107,7 +108,7 @@ do
         echo $line >> password.txt
         tail -n 1 keybase_pgp_template >> password.txt
         keybase pgp decrypt -i password.txt >> ./credentials/decrypted/trainer_key_secrets
-        echo -e \n >> ./credentials/decrypted/trainer_key_secrets
+        echo >> ./credentials/decrypted/trainer_key_secrets
 done < "./credentials/clean/trainer_encrypted_key_secrets_adjusted"
 
 ##################
@@ -121,7 +122,7 @@ do
         echo $line >> password.txt
         tail -n 1 keybase_pgp_template >> password.txt
         keybase pgp decrypt -i password.txt >> ./credentials/decrypted/student_key_secrets
-        echo -e \n >> ./credentials/decrypted/student_key_secrets
+        echo >> ./credentials/decrypted/student_key_secrets
 done < "./credentials/clean/student_encrypted_key_secrets_adjusted"
 
 rm password.txt
@@ -130,7 +131,7 @@ rm password.txt
 ##### ASSEMBLING THE GLOBAL CREDENTIALS FILE #####
 ##################################################
 
-f0="./credentials/all_credentials.txt"
+f0="all_credentials.txt"
 f1="./credentials/clean/trainer_users_adjusted"
 f2="./credentials/decrypted/trainer_passwords"
 f3="./credentials/clean/trainer_key_ids_adjusted"
