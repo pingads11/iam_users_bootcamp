@@ -5,20 +5,43 @@
 ### Only uncomment this block when you have deployed all the
 ### resources successfully and have the terraform.tfstate locally.
 
-terraform {
-  backend "s3" {
+#terraform {
+#  backend "s3" {
 
 ### Variables are not allowed in this block. Make sure to update
 ### the bucket and dynamodb table names below if changed.
 
-    bucket = "restricted-tfstate-bootcamp-bucket"
-    dynamodb_table = "terraform-state-locking"
+#    bucket = "restricted-tfstate-bootcamp-bucket"
+#    dynamodb_table = "terraform-state-locking"
 
-    key = "terraform/terraform.tfstate"
-    region = "eu-central-1"
-    encrypt = true
-  }
+#    key = "terraform/terraform.tfstate"
+#    region = "eu-central-1"
+#    encrypt = true
+#  }
+#}
+
+##############################
+##### TERRAFORM VERSION  #####
+##############################
+
+terraform {
+  required_version = ">= 0.14.5"
 }
+
+###############################
+##### OUTPUT CREDENTIALS  #####
+###############################
+
+#resource "local_file" "student_encrypted_passwords" {
+#    content     = "${values(aws_iam_user_login_profile.student_logins)[*].encrypted_password}"
+#    filename = "./credentials/student_encrypted_passwords"
+#}
+
+#resource "local_file" "student_encrypted_secrets" {
+#    content     = values(aws_iam_access_key.student_keys)[*].encrypted_secret
+#    filename = "./credentials/student_encrypted_secrets"
+#}
+
 
 ################################
 ##### DEFINING THE REGION  #####

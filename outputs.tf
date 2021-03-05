@@ -26,11 +26,11 @@ output "student_passwords" {
 ##### ACCESS KEY IDS #####
 ##########################
 
-output "trainer_key_id" {
+output "trainer_key_ids" {
   value = values(aws_iam_access_key.trainer_keys)[*].id
 }
 
-output "student_key_id" {
+output "student_key_ids" {
   value = values(aws_iam_access_key.student_keys)[*].id
 }
 
@@ -38,10 +38,10 @@ output "student_key_id" {
 ##### ACCESS KEY SECRETS #####
 ##############################
 
-output "trainer_key_secret" {
+output "trainer_key_secrets" {
   value = values(aws_iam_access_key.trainer_keys)[*].encrypted_secret
 }
 
-output "student_key_secret" {
+output "student_key_secrets" {
   value = values(aws_iam_access_key.student_keys)[*].encrypted_secret
 }

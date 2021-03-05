@@ -14,51 +14,60 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 * Attachments of the policies to their respective groups.
 
-* A private S3 Bucket used as remote backend for Terraform with a DynamoDB state lock.
+* Two private S3 Buckets, one used as general storage for the bootcamp, and one used as a remote backend for Terraform with a DynamoDB state lock.
 
 
 # REQUIREMENTS
 
-* The student users need to be able to reset their passwords after the first login. To do that, they need permission from the AWS Account that deploys them. Go to IAM -> Account Settings on the left panel -> Change password policy -> **Allow users to reset their passwords** (Make sure you check any other field that was applied in the previous configuration)
+* AWS CLI >= 2.1.9
+
+* Terraform >= 0.14.5
+
+* Keybase app >= 5.6.1
+
+* If there are problems during decryption, check the **keybase_pgp_template** file and make sure the version is up to date with the encrypted pgp message **format** (not with the Keybase app version).
 
 
-# HOW-TO DEPLOY
+# HOW TO DEPLOY...
 
-1. Configure **aws-cli** with your access keys.
+1. Configure **aws cli** with your access keys.
 
-2. Create a Keybase account with a PGP key - no need to install it locally.
+2. Create a Keybase account and a PGP key for it - [Keybase](https://www.keybase.io). You will also have to install its pkg locally so that automated decryption can be used - [Keybase App](https://www.keybase.io/download).
 
 3. Clone this repository locally.
 
-4. Open **main.tf** and check the very first block named **REMOTE S3 BACKEND**; it should all be commented out. _This is to make sure that you first deploy everything  correctly with a local state file._
+4. Open **main.tf** and check the very first block named **REMOTE S3 BACKEND**; it should all be commented out. _This is to make sure that you first deploy everything correctly with a local state file._
 
-5. Still in **main.tf**, go to the last **four** resources below the **IAM User Access Keys** block and update the **pgp_key** arguments - it should be "keybase:yourusername" in **all of them**.
+5. Go to **variables.tf** - third block named **KEYBASE USERNAME**, and update the username with **yours**.
 
 6. Run **terraform init** and **terraform apply** the first time.
 
-7. Verify the successful deployment: Groups, Users, Permissions, and S3 Bucket.
+7. Verify the successful deployment: Groups, Users, Permissions, and S3 Buckets.
+
+_Steps 8, 9, and 10 are OPTIONAL (For the Remote Backend)_
 
 8. Now, go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**.
 
 9. Run **terraform init** _(and terraform plan/apply if you want to check for changes)_ a second time to change the **terraform.tfstate** file storage from local to remote.
 
-10. Verify that the S3 Bucket contains the state file.
+10. Verify that the **restricted** S3 Bucket contains the state file.
 
 11. To enable users access to the AWS Console:
 
-* Running Terraform Apply outputs Student Access Key IDs, Encrypted Student Access Key Secrets, Encrypted Student Passwords, Student Users, Trainer Access Key IDs, Encrypted Trainer Access Key Secrets, Encrypted Trainer Passwords, and Trainer Users in this other. 
+* Make sure your present working directory is **bootcamp-iam**, then run the shell script `./credentials.sh`.
 
-* For now, the manual part of this automation is to decrypt each password and communicate it to its user. The decryption can be done on _https://keybase.io/decrypt_ with the same profile whose usernamed was applied to the **pgp_key** arguments, but you need to paste the encrypted password/secret in the **keybase_pgp_template** file provided for the correct format.
+* After some time processing **terraform output**, you will be prompted for your **Keybase** password.
 
-* Encrypted passwords and secret keys can be seen on the state file as expected, but the only person able to decrypt them is the one with the Keybase account.
+* Passwords and secrets are decrypted, and a global credentials file named **all_credentials.txt** will be available in the **bootcamp-iam/credentials/** directory.
 
-_(A less manual option can be investigated using the Keybase desktop app or pkg. Note that it cannot be used with root privilege.)_
+* For extra safety, the **all_credentials.txt** file and the contents of **credentials/{raw,clean,decrypted}** directories are in **.gitignore**.
 
-# TERRAFORM DESTROY
 
-**NEVER DELETE THE BUCKET MANUALLY FIRST!**
+# ...HOW TO DESTROY
 
-1. In **main.tf**, comment out the first remote S3 backend block and run **terraform init** to save the state file locally.
+**NEVER DELETE THE REMOTE BACKEND BUCKET MANUALLY FIRST!**
+
+1. _[If the remote backend is enabled]_ In **main.tf**, comment out the first remote S3 backend block and run **terraform init** to save the state file locally.
 
 2. Go to the S3 bucket block and comment out the **lifecycle** block
 

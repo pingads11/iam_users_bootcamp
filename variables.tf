@@ -23,6 +23,9 @@ variable "dynamodb_name" {
 ##### KEYBASE USERNAME #####
 ############################
 
+### Make sure to update the field after "keybase:-----"
+### with your own username.
+
 variable "keybase_username" {
   type = string
   default = "keybase:idrisscharai"
@@ -34,12 +37,12 @@ variable "keybase_username" {
 
 variable "trainer_users" {
   type = list(string)
-  default = ["Trainer"] 
+  default = ["Trainer1", "Trainer2", "Trainer3"] 
 }
 
 variable "student_users" {
   type = list(string)
-  default = ["Student"]
+  default = ["Student1", "Student2", "Student3"]
 }
 
 ####################
