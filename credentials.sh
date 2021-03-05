@@ -149,3 +149,17 @@ echo -e "\n\nSTUDENTS\tINITIAL_PASSWORDS\tACCESS_KEY_IDS\t\tACCESS_KEY_SECRETS\n
 
 paste $f1 $f2 $f3 $f4 >> $f0
 
+##########################################
+##### CLEANING UP CREDENTIAL FOLDERS #####
+##########################################
+
+rm ./credentials/raw/*
+rm ./credentials/clean/*
+rm ./credentials/decrypted/*
+
+### Adding a placeholder filer to allow staging these folders (otherwise empty).
+
+touch ./credentials/raw/placeholder
+touch ./credentials/clean/placeholder
+touch ./credentials/decrypted/placeholder
+

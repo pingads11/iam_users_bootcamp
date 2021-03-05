@@ -6,10 +6,4 @@ terraform.tfstate
 
 terraform.tfstate.backup
 
-credentials/all_credentials.txt
-
-credentials/decrypted/*
-
-credentials/clean/*
-
-credentials/raw/*
+./credentials/all_credentials.txt
