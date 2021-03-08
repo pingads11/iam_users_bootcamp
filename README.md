@@ -40,7 +40,7 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 5. Go to **variables.tf** - third block named **KEYBASE USERNAME**, and update the username with **yours**.
 
-6. Run **terraform init** and **terraform apply** the first time.
+6. Run `terraform init` and `terraform apply` the first time.
 
 7. Verify the successful deployment: Groups, Users, Permissions, and S3 Buckets.
 
@@ -48,7 +48,7 @@ _Steps 8, 9, and 10 are OPTIONAL (For the Remote Backend)_
 
 8. Now, go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**.
 
-9. Run **terraform init** _(and terraform plan/apply if you want to check for changes)_ a second time to change the **terraform.tfstate** file storage from local to remote.
+9. Run `terraform init` _(and terraform plan/apply if you want to check for changes)_ a second time to change the **terraform.tfstate** file storage from local to remote.
 
 10. Verify that the **restricted** S3 Bucket contains the state file.
 
@@ -56,26 +56,26 @@ _Steps 8, 9, and 10 are OPTIONAL (For the Remote Backend)_
 
 * Make sure your present working directory is **bootcamp-iam**, then run the shell script `./credentials.sh`.
 
-* After some time processing **terraform output**, you will be prompted for your **Keybase** password.
+* After some time processing `terraform output`, you will be prompted for your **Keybase** password.
 
-* Passwords and secrets are decrypted, and a global credentials file named **all_credentials.txt** will be available in the **bootcamp-iam/credentials/** directory.
+* Passwords and secrets are decrypted, and a global credentials file named **all_credentials.txt** will be available under the **bootcamp-iam/** directory.
 
-* For extra safety, the **all_credentials.txt** file and the contents of **credentials/{raw,clean,decrypted}** directories are in **.gitignore**.
+* For extra safety, the **all_credentials.txt** file is in **.gitignore**, and the contents of the **credentials/{raw,clean,decrypted}** directories are wiped after producing **all_credentials.txt**.
 
 
 # ...HOW TO DESTROY
 
 **NEVER DELETE THE REMOTE BACKEND BUCKET MANUALLY FIRST!**
 
-1. _[If the remote backend is enabled]_ In **main.tf**, comment out the first remote S3 backend block and run **terraform init** to save the state file locally.
+1. _[If the remote backend is enabled]_ In **main.tf**, comment out the first remote S3 backend block and run `terraform init` to save the state file locally.
 
 2. Go to the S3 bucket block and comment out the **lifecycle** block
 
 3. Then uncomment **force_destroy = true**
 
-4. Finally, run **terraform destroy**.
+4. Finally, run `terraform destroy`.
 
 5. Due to the versioning of the bucket, it might destroy everything except the bucket and its contents. In that case, manually use the **empty** action on the bucket then **delete** it.
 
-6. Run **terraform apply** after to account for that.
+6. Run `terraform apply` after to account for that.
 
