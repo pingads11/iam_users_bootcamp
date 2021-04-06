@@ -8,6 +8,11 @@ resource "aws_s3_bucket" "tfstate_bucket" {
 
   acl    = "private"
 
+  tags = {
+    department = "ICP"
+    project = "bootcamp"
+  }
+
 ### The argument below prevents the bucket to be accidentally destroyed
 ### by "terraform destroy". This will avoid losing the terraform.tfstate file
 ### stored as backend in the S3 bucket. Comment it out if you want to

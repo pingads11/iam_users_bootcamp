@@ -28,21 +28,6 @@ terraform {
   required_version = ">= 0.14.5"
 }
 
-###############################
-##### OUTPUT CREDENTIALS  #####
-###############################
-
-#resource "local_file" "student_encrypted_passwords" {
-#    content     = "${values(aws_iam_user_login_profile.student_logins)[*].encrypted_password}"
-#    filename = "./credentials/student_encrypted_passwords"
-#}
-
-#resource "local_file" "student_encrypted_secrets" {
-#    content     = values(aws_iam_access_key.student_keys)[*].encrypted_secret
-#    filename = "./credentials/student_encrypted_secrets"
-#}
-
-
 ################################
 ##### DEFINING THE REGION  #####
 ################################
@@ -99,19 +84,24 @@ resource "aws_iam_group" "students" {
 ##### CREATING A STUDENT POLICY FOR S3 #####
 ############################################
 
-data "template_file" "student_s3_policy" {
-  template = file("./custom_s3_student_policy.tpl")
+data "template_file" "custom_student_policy" {
+  template = file("./custom_student_policy.tpl")
   vars = {
     bootcamp_bucket_name = var.bucket_name
     state_bucket_name = module.state_bucket.bucket_name
+    vpc_id = var.main_vpc_id
   }
 }
 
-resource "aws_iam_policy" "student_s3_policy" {
-  name = "Student_S3_Policy"
-  description = "A policy allowing Create, Get, and Put actions on S3 buckets without the Delete action."
+resource "aws_iam_policy" "custom_student_policy" {
+  name = "Custom_Student_Policy"
+  description = "A custom policy for specific student Allow/Deny actions."
 
-  policy = data.template_file.student_s3_policy.rendered
+  policy = data.template_file.custom_student_policy.rendered
+
+### "tags" argument unsupported? Customer managed policies still have tags on the console...
+
+#  tags = var.tags
 }
 
 #################################################
@@ -130,9 +120,9 @@ resource "aws_iam_group_policy_attachment" "student_group_attach" {
   policy_arn = each.value
 }
 
-resource "aws_iam_group_policy_attachment" "student_group_s3_attach" {
+resource "aws_iam_group_policy_attachment" "student_group_custom_attach" {
   group = aws_iam_group.students.name
-  policy_arn = aws_iam_policy.student_s3_policy.arn
+  policy_arn = aws_iam_policy.custom_student_policy.arn
 }
 
 ##################################################
@@ -142,11 +132,13 @@ resource "aws_iam_group_policy_attachment" "student_group_s3_attach" {
 resource "aws_iam_user" "trainer" {
   for_each = toset(var.trainer_users)
   name     = each.value
+  tags     = var.tags
 }
 
 resource "aws_iam_user" "student" {
   for_each = toset(var.student_users)
   name     = each.value
+  tags     = var.tags
 }
 
 ########################################
@@ -177,6 +169,8 @@ resource "aws_s3_bucket" "bootcamp_bucket" {
   bucket = var.bucket_name
 
   acl    = "private"
+
+  tags   = var.tags
 
 ### The argument below prevents the bucket to be accidentally destroyed
 ### by "terraform destroy". This will avoid losing the terraform.tfstate file

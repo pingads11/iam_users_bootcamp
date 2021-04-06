@@ -37,12 +37,12 @@ variable "keybase_username" {
 
 variable "trainer_users" {
   type = list(string)
-  default = ["Trainer1", "Trainer2", "Trainer3"] 
+  default = ["Ieva", "Darina", "Sabir", "Abuharis"] 
 }
 
 variable "student_users" {
   type = list(string)
-  default = ["Student1", "Student2", "Student3"]
+  default = ["Umar", "Idriss"]
 }
 
 ####################
@@ -57,5 +57,26 @@ variable "trainer_policies" {
 variable "student_policies" {
   type = list(string)
   default = ["arn:aws:iam::aws:policy/AmazonVPCFullAccess", "arn:aws:iam::aws:policy/AmazonEC2FullAccess", "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess"]
+}
+
+##################
+##### VPC ID #####
+##################
+
+variable "main_vpc_id" {
+  type = string
+  default = "vpc-022d40f0a4dc4bb61"
+}
+
+################
+##### TAGS #####
+################
+
+variable "tags" {
+  type = map
+  default = {
+    department = "ICP",
+    project = "bootcamp"
+  }
 }
 

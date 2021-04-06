@@ -2,18 +2,17 @@
 
 ### Make sure you run this script from the bootcamp-iam directory
 
-### First, we take raw terraform credential outputs and put them in
-### appropriate files. Then, we use some linux magic to modify
-### the text files and make them cleaner (removing brackets, quotes
-### commas, spaces, and unnecessary lines).
-### After that, we create a temporary file that has the appropriate
-### outline to be decrypted by keybase.
-### Finally, we create a globabl credentials file that can be used
-### to communicate info to each user.
+### This script will process terraform output and decrypt it when needed,
+### and then output a file with all the credentials.
+
+### It creates temporary folders/files for an organized approach only;
+### can be optimized with loops.
 
 echo Please wait while the credentials file is being prepared...
 echo If this is your first time running the script,
 echo you will soon be prompted to enter your keybase password.
+
+mkdir -p ./credentials/{raw,clean,decrypted}
 
 ###############################
 ##### ENCRYPTED PASSWORDS #####
@@ -154,13 +153,5 @@ paste $f1 $f2 $f3 $f4 >> $f0
 ##### CLEANING UP CREDENTIAL FOLDERS #####
 ##########################################
 
-rm ./credentials/raw/*
-rm ./credentials/clean/*
-rm ./credentials/decrypted/*
-
-### Adding a placeholder filer to allow staging these folders (otherwise empty).
-
-touch ./credentials/raw/placeholder
-touch ./credentials/clean/placeholder
-touch ./credentials/decrypted/placeholder
+rm -rf ./credentials/{raw,clean,decrypted}
 
