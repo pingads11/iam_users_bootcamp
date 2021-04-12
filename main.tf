@@ -5,20 +5,20 @@
 ### Only uncomment this block when you have deployed all the
 ### resources successfully and have the terraform.tfstate locally.
 
-#terraform {
-#  backend "s3" {
+terraform {
+  backend "s3" {
 
 ### Variables are not allowed in this block. Make sure to update
 ### the bucket and dynamodb table names below if changed.
 
-#    bucket = "restricted-tfstate-bootcamp-bucket"
-#    dynamodb_table = "terraform-state-locking"
+    bucket = "tfstate-bootcamp-bucket"
+    dynamodb_table = "terraform-state-locking"
 
-#    key = "terraform/terraform.tfstate"
-#    region = "eu-central-1"
-#    encrypt = true
-#  }
-#}
+    key = "terraform/terraform.tfstate"
+    region = "eu-central-1"
+    encrypt = true
+  }
+}
 
 ##############################
 ##### TERRAFORM VERSION  #####
@@ -77,7 +77,7 @@ resource "aws_iam_group" "trainers" {
 }
 
 resource "aws_iam_group" "students" {
-  name = "Students"
+  name = "Students2"
 }
 
 ############################################
@@ -120,10 +120,11 @@ resource "aws_iam_group_policy_attachment" "student_group_attach" {
   policy_arn = each.value
 }
 
+ 
 resource "aws_iam_group_policy_attachment" "student_group_custom_attach" {
   group = aws_iam_group.students.name
   policy_arn = aws_iam_policy.custom_student_policy.arn
-}
+} 
 
 ##################################################
 ##### CREATING THE TRAINER AND STUDENT USERS #####

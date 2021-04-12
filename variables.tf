@@ -4,7 +4,7 @@
 
 variable "bucket_name" {
   type = string
-  default = "bootcamp-march2021-aws-s3-bucket"
+  default = "bootcamp-april2021-aws-s3-bucket"
 }
 
 #########################
@@ -28,7 +28,7 @@ variable "dynamodb_name" {
 
 variable "keybase_username" {
   type = string
-  default = "keybase:idrisscharai"
+  default = "keybase:deekaay"
 }
 
 #################
@@ -37,12 +37,12 @@ variable "keybase_username" {
 
 variable "trainer_users" {
   type = list(string)
-  default = ["Ieva", "Darina", "Sabir", "Abuharis"] 
+  default = ["Shahid", "Darina", "Gatis", "Ieva", "Andris", "Janis", "Emmanuel", "Ernest", "Richards", "Abuharis"] 
 }
 
 variable "student_users" {
   type = list(string)
-  default = ["Umar", "Idriss"]
+  default = ["Antons_S", "Alina_V", "Marats_S", "Angelina_S", "Vadim_S", "Anna_S", "Martins_T", "Asnate_M", "Arturs_Z", "Anfisa_T", "Konstantinos_M", "Ksenija_G", "Sami_U", "Zane_G", "Jevgenijs_L", "Aleksandra_H"]
 }
 
 ####################

@@ -7,6 +7,6 @@
 
 variable "bucket_name" {
   type = string
-  default = "restricted-tfstate-bootcamp-bucket"
+  default = "tfstate-bootcamp-bucket"
 }
 
