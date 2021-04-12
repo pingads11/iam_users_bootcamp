@@ -95,6 +95,14 @@
           "Resource": "arn:aws:iam::*:user/$${aws:username}"
         },
 	{
+	  "Sid": "EC2ConnectPermission",
+	  "Action": [
+	    "ec2-instance-connect:*"
+	  ],
+	  "Effect": "Allow",
+	  "Resource": "*"
+	},
+	{
           "Sid": "ReadOnlyEC2WithNonResource",
           "Action": [
             "ec2:Describe*",
