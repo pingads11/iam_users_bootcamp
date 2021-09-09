@@ -234,7 +234,7 @@
                 "iam:UpdateAccessKey",
                 "iam:DeleteAccessKey"
             ],
-            "Resource": "arn:aws:iam::*:user/${aws:username}"
+            "Resource": "arn:aws:iam::*:user/$${aws:username}"
         },
         {
             "Effect": "Allow",
