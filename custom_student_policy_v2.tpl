@@ -155,7 +155,9 @@
                 "cloudformation:GetTemplateSummary",
                 "cloudformation:List*",
                 "cloudformation:Detect*",
-                "ec2:CreateTags"
+                "ec2:CreateTags",
+                "cloudformation:CreateStack",
+                "cloudformation:UpdateStack"
             ],
             "Resource": [
                 "arn:aws:ec2:*::image/*",
@@ -185,9 +187,7 @@
                 "ec2:*",
                 "elasticloadbalancing:*",
                 "autoscaling:*",
-                "s3:*",
-                "cloudformation:CreateStack",
-                "cloudformation:UpdateStack"
+                "s3:*"
             ],
             "Resource": [
                 "*",
@@ -195,7 +195,7 @@
             ],
             "Condition": {
                 "StringEquals": {
-                    "aws:RequestTag/project": "Bootcamp",
+                    "aws:RequestTag/project": "bootcamp",
                     "aws:RequestTag/department": "ICP"
                 }
             }
