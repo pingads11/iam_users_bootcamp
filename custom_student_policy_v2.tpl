@@ -215,7 +215,7 @@
             ],
             "Condition": {
                 "StringEquals": {
-                    "aws:ResourceTag/project": "Bootcamp",
+                    "aws:ResourceTag/project": "bootcamp",
                     "aws:ResourceTag/department": "ICP"
                 }
             }
