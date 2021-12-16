@@ -96,7 +96,17 @@
                 "s3:Put*",
                 "s3:GetAccountPublicAccessBlock",
                 "s3:GetBucketPolicy",
-                "s3:GetBucketPublicAccessBlock"
+                "s3:GetBucketPublicAccessBlock",
+                "s3:Delete*",
+                "s3:GetBucketAcl",
+                "s3:GetObjectAcl",
+                "s3:GetObjectVersionAcl",
+                "s3:PutBucketAcl",
+                "s3:PutObjectAcl",
+                "s3:PutObjectVersionAcl",
+                "s3:DeleteObjectVersion",
+                "s3:GetBucketVersioning",
+                "s3:GetObjectVersion"
             ],
             "Resource": [
                 "arn:aws:s3:::icp-static-website*",
@@ -117,12 +127,36 @@
                 "lambda:UpdateFunctionCode",
                 "lambda:InvokeFunction",
                 "lambda:AddPermission",
-                "apigateway:*"
+                "apigateway:*",
+                "cloudwatch:GetMetricData"
             ],
             "Resource": [
                 "arn:aws:lambda:*:*:function:icp-user-data*",
-                "arn:aws:iam::*:role/userDataRole",
+                "arn:aws:iam::*:role/UserDataRoleM08",
                 "arn:aws:apigateway:*::*"
+            ]
+        },
+        {
+            "Sid": "LambdaGetMetrics",
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:GetMetricData"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "ListAllStacksAndStartInstance",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:StopInstances",
+                "ec2:StartInstances",
+                "cloudformation:ListStacks"
+            ],
+            "Resource": [
+                "arn:aws:ec2:*:*:instance/*",
+                "arn:aws:cloudformation:*:*:stack/*/*"
             ]
         },
         {
@@ -157,11 +191,25 @@
                 "cloudformation:Detect*",
                 "ec2:CreateTags",
                 "cloudformation:CreateStack",
-                "cloudformation:UpdateStack"
+                "cloudformation:UpdateStack",
+                "ec2:CreateSubnet",
+                "ec2:ModifySubnetAttribute",
+                "ec2:AssociateRouteTable",
+                "ec2:RevokeSecurityGroup*",
+                "ec2:AuthorizeSecurityGroup*",
+                "ec2:DisassociateRouteTable",
+                "ec2:DeleteSubnet",
+                "route53:GetHostedZone",
+                "route53:ChangeResourceRecordSets",
+                "route53:GetChange",
+                "route53:Describe*",
+                "route53:Get*",
+                "route53:List*"
             ],
             "Resource": [
                 "arn:aws:ec2:*::image/*",
                 "arn:aws:ec2:*::snapshot/*",
+                "arn:aws:ec2:*:*:route-table/*",
                 "arn:aws:ec2:*:*:subnet/*",
                 "arn:aws:ec2:*:*:network-interface/*",
                 "arn:aws:ec2:*:*:security-group/*",
@@ -177,7 +225,8 @@
                 "arn:aws:s3:::icp-static-website*",
                 "arn:aws:lambda:*:*:function:*",
                 "arn:aws:iam::*:user/",
-                "arn:aws:cloudformation:*:*:stack/student*"
+                "arn:aws:cloudformation:*:*:stack/student*",
+                "arn:aws:route53:::*"
             ]
         },
         {
@@ -185,6 +234,7 @@
             "Effect": "Allow",
             "Action": [
                 "ec2:*",
+                "ec2:StartInstances",
                 "elasticloadbalancing:*",
                 "autoscaling:*",
                 "s3:*"
@@ -208,7 +258,8 @@
                 "elasticloadbalancing:DeleteLoadBalancer",
                 "ec2:DeleteLaunchTemplate",
                 "autoscaling:DeleteAutoScalingGroup",
-                "cloudformation:DeleteStack"
+                "cloudformation:DeleteStack",
+                "ec2:DeleteSubnet"
             ],
             "Resource": [
                 "*"
@@ -234,7 +285,7 @@
                 "iam:UpdateAccessKey",
                 "iam:DeleteAccessKey"
             ],
-            "Resource": "arn:aws:iam::*:user/$${aws:username}"
+            "Resource": "arn:aws:iam::*:user/${aws:username}"
         },
         {
             "Effect": "Allow",
@@ -242,6 +293,13 @@
                 "cloudformation:GetTemplateSummary"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateUser"
+            ],
+            "Resource": "arn:aws:iam::789857956406:user/ses-smtp-user*"
         }
     ]
 }

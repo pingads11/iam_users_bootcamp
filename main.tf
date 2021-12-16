@@ -85,7 +85,7 @@ resource "aws_iam_group" "students" {
 ############################################
 
 data "template_file" "custom_student_policy" {
-  template = file("./custom_student_policy.tpl")
+  template = file("./custom_student_policy_v2.tpl")
   vars = {
     bootcamp_bucket_name = var.bucket_name
     state_bucket_name = module.state_bucket.bucket_name
