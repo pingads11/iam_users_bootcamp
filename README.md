@@ -36,9 +36,9 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 3. Clone this repository locally.
 
-4. Open **main.tf** and check the very first block named **REMOTE S3 BACKEND**; it should all be commented out. _This is to make sure that you first deploy everything correctly with a local state file._
+4. Open **main.tf** and check the very first block named **REMOTE S3 BACKEND**; it should all be commented out. _This is to make sure that you first deploy everything correctly with a local state file._ ---not needed(new)
 
-5. Go to **variables.tf** - third block named **KEYBASE USERNAME**, and update the username with **yours**.
+5. Go to **variables.tf** - third block named **KEYBASE USERNAME**, and update the username with **yours**. --run keybase login and enter username and password of your keybase(new)
 
 6. Run `terraform init` and `terraform apply` the first time.
 
@@ -46,11 +46,11 @@ _(Note that Full Access grants students the permission to manage all the resourc
 
 _Steps 8, 9, and 10 are OPTIONAL (For the Remote Backend)_
 
-8. Now, go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**.
+8. Now, go to **main.tf** and uncomment the first block named **REMOTE S3 BACKEND**. --not needed(new)
 
-9. Run `terraform init` _(and terraform plan/apply if you want to check for changes)_ a second time to change the **terraform.tfstate** file storage from local to remote.
+9. Run `terraform init` _(and terraform plan/apply if you want to check for changes)_ a second time to change the **terraform.tfstate** file storage from local to remote. --not needed(new)
 
-10. Verify that the **restricted** S3 Bucket contains the state file.
+10. Verify that the **restricted** S3 Bucket contains the state file.--not needed(new)
 
 11. To enable users access to the AWS Console:
 
