@@ -28,7 +28,7 @@ variable "dynamodb_name" {
 
 variable "keybase_username" {
   type = string
-  default = "keybase:deekaay"
+  default = "keybase:baibaalksere"
 }
 
 #################
@@ -37,12 +37,12 @@ variable "keybase_username" {
 
 variable "trainer_users" {
   type = list(string)
-  default = ["Shahid", "Darina", "Gatis", "Ieva", "Andris", "Janis", "Emmanuel", "Ernest", "Richards", "Abuharis"] 
+  default = ["ShahidR", "DarinaK", "UmarK", "AlwinR", "AnnieK", "JanisR", "SundusA", "LauraV", "BaibaA", "AbuharisS", "KonstantinosM", "AnnaD", "IdrissC", "ImantsP", "MartinsT", "SravaniS"] 
 }
 
 variable "student_users" {
   type = list(string)
-  default = ["Antons_S", "Alina_V", "Marats_S", "Angelina_S", "Vadim_S", "Anna_S", "Martins_T", "Asnate_M", "Arturs_Z", "Anfisa_T", "Konstantinos_M", "Ksenija_G", "Sami_U", "Zane_G", "Jevgenijs_L", "Aleksandra_H"]
+  default = ["SasikanthS", "JosephD", "DianaG", "IlijaJ", "MariansZ", "ValtersO", "RajkumarK", "MahendraM", "adymchanka", "AsgharK", "AlexS", "Shahid_R", "Darina_K", "Umar_K", "Alwin_R", "Janis_R", "Sundus_A", "Baiba_A", "Abuharis_S"]
 }
 
 ####################
@@ -75,7 +75,7 @@ variable "main_vpc_id" {
 variable "tags" {
   type = map
   default = {
-    department = "ICP",
+    department = "ICP"
     project = "bootcamp"
   }
 }

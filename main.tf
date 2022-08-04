@@ -5,20 +5,20 @@
 ### Only uncomment this block when you have deployed all the
 ### resources successfully and have the terraform.tfstate locally.
 
-terraform {
-  backend "s3" {
+# terraform {
+#  backend "s3" {
 
 ### Variables are not allowed in this block. Make sure to update
 ### the bucket and dynamodb table names below if changed.
 
-    bucket = "tfstate-bootcamp-bucket"
-    dynamodb_table = "terraform-state-locking"
+ #   bucket = "tfstate-bootcamp-bucket"
+ #   dynamodb_table = "terraform-state-locking"
 
-    key = "terraform/terraform.tfstate"
-    region = "eu-central-1"
-    encrypt = true
-  }
-}
+ #   key = "terraform/terraform.tfstate"
+ #   region = "eu-central-1"
+ #   encrypt = true
+ # }
+# }
 
 ##############################
 ##### TERRAFORM VERSION  #####
@@ -33,7 +33,9 @@ terraform {
 ################################
 
 provider "aws" {
-  region = "eu-central-1"
+  region  = "eu-central-1"
+  access_key = "AKIAWI4EI2WZ6GA6JCMW"
+  secret_key = "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"
 }
 
 ########################################
@@ -162,16 +164,16 @@ resource "aws_iam_user_group_membership" "students_membership" {
 ##### CREATING THE S3 BUCKET #####
 ##################################
 
-resource "aws_s3_bucket" "bootcamp_bucket" {
+#resource "aws_s3_bucket" "bootcamp_bucket" {
 
 ### If you change the name below, updated it also in the first block
 ### named terraform backend "s3"
 
-  bucket = var.bucket_name
+ # bucket = var.bucket_name
 
-  acl    = "private"
+ # acl    = "private"
 
-  tags   = var.tags
+ #  tags   = var.tags
 
 ### The argument below prevents the bucket to be accidentally destroyed
 ### by "terraform destroy". This will avoid losing the terraform.tfstate file
@@ -194,18 +196,18 @@ resource "aws_s3_bucket" "bootcamp_bucket" {
 
 # policy = file("s3_bucket_policy.json")
 
-  versioning {
-    enabled = true
-  }
+ # versioning {
+ #   enabled = true
+ # }
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-}
+#  server_side_encryption_configuration {
+#    rule {
+ #     apply_server_side_encryption_by_default {
+ #       sse_algorithm = "AES256"
+ #     }
+ #   }
+ # }
+# }
 
 #######################################
 ##### CREATING THE DYNAMODB TABLE #####
